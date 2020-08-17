@@ -1,6 +1,5 @@
 # coding=utf-8
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+import tensorflow as tf
 import numpy as np
 import keras
 import os
@@ -15,14 +14,19 @@ from keras.preprocessing import image
 from PIL import Image
 
 # Flask utils
-from flask import Flask, url_for, render_template, request,send_from_directory,redirect
+from flask import Flask, url_for, render_template, request,current_app,send_from_directory,redirect
 from werkzeug.utils import secure_filename
 
 #twilio stuffs 
 from twilio.twiml.messaging_response import MessagingResponse
+import requests
+from twilio.rest import Client
 
 # Define a flask app
 app = Flask(__name__)
+client = Client()
+
+
 
 # load json file before weights
 loaded_json = open("models/crop.json", "r")
@@ -47,9 +51,8 @@ def info():
     return rows
 
 
-#recieveing messeage
-incoming_msg = request.form.get('NumMedia')
-img = incoming_msg
+img_path = {}
+
 
 #sending replies
 resp = MessagingResponse()
@@ -96,43 +99,29 @@ def model_predict(img_path):
 
 
 #flask app for bot
-@app.route('/bot', methods=['POST'])
-def bot():
-    return 
-
-
-
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/test', methods=['POST', 'GET'])
 def upload():
-    if request.method == 'POST':
-        # Get the file from post request
-        f = request.files['image']
-        # Save the file to ./uploads
-        basepath = os.path.dirname(__file__)
-        img_path = os.path.join(
-            basepath, 'uploads', secure_filename(f.filename))
-        f.save(img_path)
+    #recieveing messeage
+    sender = request.form.get('From')
+    if int(request.values['NumMedia']) > 0:
+        img = request.values['MediaUrl0']
+        img_path[sender] = img
         leaf = leaf_predict(img_path)
         if leaf == "leaf":
-            # Make prediction
+            #Make prediction
             preds = model_predict(img_path)
             rows = info()
             res = np.asarray(rows[preds])
             value = (preds == int(res[0]))
             if value:
-                ID, Disease, Pathogen, Symptoms, Management = [i for i in res]
-            return msg.body( Pathogen=Pathogen, Symptoms=Symptoms, Management=Management, result=Disease, filee=f.filename)
+                Disease, Pathogen, Symptoms, Management = [i for i in res]
+                return msg(Pathogen=Pathogen, Symptoms=Symptoms, Management=Management, result=Disease )
         else:
-            return msg.body( Error="ERROR: UPLOADED IMAGE IS NOT A LEAF (OR) MORE LEAVES IN ONE IMAGE")
-        # return result
-    return None
+             return msg(Error="ERROR: UPLOADED IMAGE IS NOT A LEAF (OR) MORE LEAVES IN ONE IMAGE")
+    return None         
 
-@app.route('/predict/<filename>')
-def send_file(filename):
-    return send_from_directory('uploads', filename)
 
 
 
 if __name__ == '__main__':
     app.run()
-
