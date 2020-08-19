@@ -24,7 +24,7 @@ from twilio.rest import Client
 
 # Define a flask app
 app = Flask(__name__)
-client = Client()
+
 
 
 
@@ -51,7 +51,8 @@ def info():
     return rows
 
 
-img_path = {}
+img_dict = {}
+img_path = img_dict.get(entry)
 
 
 #sending replies
