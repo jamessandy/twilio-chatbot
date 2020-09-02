@@ -11,8 +11,8 @@ When you're done, you can delete the content in this README and update the file 
 
 This package is very easy to use and has 2  fuctions which are:
 
-1. extract_features() this function simply take the image and extract the features from it.
-2. generate_desc() this function now generates a description for the Image.
+1. ***extract_features()*** this function simply take the image and extract the features from it.
+2. ***generate_desc()*** this function now generates a description for the Image.
 
 ---
 ```
