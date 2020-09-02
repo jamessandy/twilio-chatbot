@@ -15,8 +15,9 @@ This package is very easy to use and has 2  fuctions which are:
 2. ***generate_desc()*** this function now generates a description for the Image.
 
 ---
-```
+
 ## Demo in a flask app
+```
 @app.route("/generateCaption", methods=["POST"])
 def generateCaption():
     image = request.files['image']
