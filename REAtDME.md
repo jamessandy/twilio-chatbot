@@ -39,6 +39,7 @@ def generateCaption():
 ---
 
 ## Demo in a python script
+#import image and extract feature
 photo = extract_features(img_path)
 img = Image.open(img_path)
 description = generate_desc(model, tokenizer, photo, max_length)
