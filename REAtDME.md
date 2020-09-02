@@ -15,7 +15,7 @@ This package is very easy to use and has 2  fuctions which are:
 2. generate_desc() this function now generates a description for the Image.
 
 ---
-
+```
 ## Demo in a flask app
 @app.route("/generateCaption", methods=["POST"])
 def generateCaption():
@@ -35,10 +35,11 @@ def generateCaption():
 
    
     return render_template("results.html", image=image, caption=caption)
-
+```
 ---
 
 ## Demo in a python script
+```
 #import image and extract feature
 photo = extract_features(img_path)
 img = Image.open(img_path)
@@ -46,6 +47,7 @@ description = generate_desc(model, tokenizer, photo, max_length)
 print("\n\n")
 print(description)
 plt.imshow(img)
+```
 
 
 Hope this helps you understand the package and use it in a project.
